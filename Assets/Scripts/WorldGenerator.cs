@@ -8,10 +8,13 @@ public class WorldGenerator : MonoBehaviour
     public int numChunks = 5;
     public int chunkSize = 13;
     public int seed = 12345;
+
     private bool isFirstCall = true;
     private Vector3 LastChunkPosition;
     private System.Random randomGenerator;
     private int lastRandomIndex;
+
+    private List<Chunk> chunks = new List<Chunk>();
 
     void Start()
     {
@@ -23,17 +26,20 @@ public class WorldGenerator : MonoBehaviour
     {
         for (int x = 0; x < numChunks; x++)
         {
-
-
             GameObject chunkObject = Instantiate(chunkPrefab, NextPositionChunkCalculator(), Quaternion.identity);
 
             Chunk chunk = chunkObject.GetComponent<Chunk>();
 
             int offset = chunkSize;
 
-            // Llamar a GenerateChunk con la semilla
-            chunk.GenerateChunk(offset, seed);
+            chunk.GenerateChunk(offset, seed); // Llamar a GenerateChunk con la semilla
+
+            chunks.Add(chunk);
         }
+
+        RoadMaker roadMaker = gameObject.AddComponent<RoadMaker>(); //Llamar y crear generador de caminos
+        roadMaker.Initialize(chunks, chunkSize);
+        roadMaker.GenerateRoads();
     }
 
     private Vector3 NextPositionChunkCalculator()
