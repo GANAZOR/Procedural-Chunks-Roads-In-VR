@@ -52,7 +52,6 @@ public class Chunk : MonoBehaviour
         {
             centerCube.SetActive(false);  // Desactivar el cubo en lugar de destruirlo
         }
-
     }
 
     public void CombineMeshes()  // Combinar meshes por material

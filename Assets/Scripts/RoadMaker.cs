@@ -1,8 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Net;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoadMaker : MonoBehaviour
@@ -10,9 +6,9 @@ public class RoadMaker : MonoBehaviour
     private List<Chunk> chunks;
     private int chunkSize;
 
-    private float raycastRadius = 0.2f;
+    private float raycastRadius = 0.1f;
     private bool isFirstChunk = true;
-    private Vector3 lastPathPosition, Start, End;
+    private Vector3 lastPathPosition;
 
     public void Initialize(List<Chunk> chunks, int chunkSize)
     {
@@ -24,27 +20,22 @@ public class RoadMaker : MonoBehaviour
     {
         if (chunks == null || chunks.Count < 2)
         {
-            Debug.LogError("No hay suficientes chunks para generar caminos.");
+            Debug.Log("No hay suficientes chunks para generar caminos.");
             return;
         }
 
         lastPathPosition = GetChunkCenter(chunks[0]);
 
-
         foreach (Chunk chunk in chunks)
         {
             Vector3 currentChunkCenter = GetChunkCenter(chunk);
-
-            Debug.LogError("lastPathPosition" + lastPathPosition);
-            Debug.LogError("currentChunkCenter" + currentChunkCenter);
 
             GeneratePathBetweenPoints(chunk, new Vector3(lastPathPosition.x, 1, lastPathPosition.z), new Vector3(currentChunkCenter.x, 1, currentChunkCenter.z));
         }
 
         foreach (Chunk chunk in chunks)
         {
-            // Combinar meshes del chunk
-            //chunk.CombineMeshes();
+            chunk.CombineMeshes(); // Combinar meshes del chunk
         }
     }
 
@@ -74,9 +65,6 @@ public class RoadMaker : MonoBehaviour
         Vector3 direction = (end - start).normalized;
         float distance = Vector3.Distance(start, end);
 
-        Start = start;
-        End = end;
-
         RaycastHit[] hits = Physics.SphereCastAll(start, raycastRadius, direction, distance);
 
         Debug.Log("Hits encontrados: " + hits.Length);
@@ -85,30 +73,9 @@ public class RoadMaker : MonoBehaviour
         {
             GameObject hitObject = hit.collider.gameObject;
 
-            Debug.Log("2");
-            if (chunk.cubes != null && chunk.cubes.Length > 0)
-            {
-                Debug.Log("1");
-                foreach (GameObject cube in chunk.cubes)
-                {
-                    Debug.Log("0");
-                    cube.SetActive(false);
+            hitObject.SetActive(false);
 
-                    lastPathPosition = cube.transform.position;
-                }
-            }
-            else
-            {
-                Debug.Log("No hay cubos en chunk.cubes");
-            }
+            lastPathPosition = hitObject.transform.position;
         }
-    }
-
-    void OnDrawGizmos()
-    {
-        Debug.Log("Start" + Start + "and End" + End);
-
-        Gizmos.DrawSphere(Start, 0.3f);
-        Gizmos.DrawSphere(End, 0.3f);
     }
 }

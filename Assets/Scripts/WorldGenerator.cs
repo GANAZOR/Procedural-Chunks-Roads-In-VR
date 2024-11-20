@@ -37,6 +37,12 @@ public class WorldGenerator : MonoBehaviour
             chunks.Add(chunk);
         }
 
+        StartCoroutine(CRoadMaker());
+    }
+
+    IEnumerator CRoadMaker()
+    {
+        yield return new WaitForSeconds(0.01f);
         RoadMaker roadMaker = gameObject.AddComponent<RoadMaker>(); //Llamar y crear generador de caminos
         roadMaker.Initialize(chunks, chunkSize);
         roadMaker.GenerateRoads();
