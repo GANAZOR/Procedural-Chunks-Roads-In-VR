@@ -67,8 +67,6 @@ public class RoadMaker : MonoBehaviour
 
         RaycastHit[] hits = Physics.SphereCastAll(start, raycastRadius, direction, distance);
 
-        Debug.Log("Hits encontrados: " + hits.Length);
-
         foreach (RaycastHit hit in hits)
         {
             GameObject hitObject = hit.collider.gameObject;
